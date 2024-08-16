@@ -29,13 +29,27 @@ async function run() {
 
     const productCollection = client.db("styleBazar").collection("products");
 
+    // product api
     //products api
     app.get("/products", async (req, res) => {
+      const search = req.query.search;
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
-    
+      let query = {};
+
+      if (search) {
+        query = {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { companyName: { $regex: search, $options: "i" } },
+            { categoryName: { $regex: search, $options: "i" } },
+          ],
+        };
+      }
+      
+
       const result = await productCollection
-        .find()
+        .find(query, options)
         .skip(page * size)
         .limit(size)
         .toArray();
