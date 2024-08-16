@@ -27,8 +27,41 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const productCollection = client.db("PharmaPlaza").collection("products");
+    const productCollection = client.db("styleBazar").collection("products");
 
+    //products api
+    // app.get("/products", async (req, res) => {
+    //   const search = req.query.search;
+    //   const size = parseInt(req.query.size);
+    //   const page = parseInt(req.query.page) - 1;
+    //   const sort = req.query.sort;
+    //   let query = {};
+
+    //   if (search) {
+    //     query = {
+    //       $or: [
+    //         { name: { $regex: search, $options: "i" } },
+    //         { companyName: { $regex: search, $options: "i" } },
+    //         { categoryName: { $regex: search, $options: "i" } },
+    //       ],
+    //     };
+    //   }
+    //   let options = {};
+    //   if (sort) options = { sort: { pricePerUnit: sort === "asc" ? 1 : -1 } };
+
+    //   const result = await productCollection
+    //     .find(query, options)
+    //     .skip(page * size)
+    //     .limit(size)
+    //     .toArray();
+    //   res.send(result);
+    // });
+
+    // get all data for pagination
+    app.get("/products-count", async (req, res) => {
+      const count = await productCollection.countDocuments();
+      res.send({ count });
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
