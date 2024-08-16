@@ -30,24 +30,26 @@ async function run() {
     const productCollection = client.db("styleBazar").collection("products");
 
     //products api
+    //products api
     app.get("/products", async (req, res) => {
       const search = req.query.search;
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
       const sort = req.query.sort;
+      console.log(sort)
       let query = {};
 
       if (search) {
         query = {
           $or: [
-            { name: { $regex: search, $options: "i" } },
-            { companyName: { $regex: search, $options: "i" } },
-            { categoryName: { $regex: search, $options: "i" } },
+            { productName: { $regex: search, $options: "i" } },
+            { category: { $regex: search, $options: "i" } },
+            { brandName: { $regex: search, $options: "i" } },
           ],
         };
       }
       let options = {};
-      if (sort) options = { sort: { pricePerUnit: sort === "asc" ? 1 : -1 } };
+      if (sort) options = { sort: { price: sort === "asc" ? 1 : -1 } };
 
       const result = await productCollection
         .find(query, options)
