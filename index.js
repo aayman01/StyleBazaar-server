@@ -35,8 +35,19 @@ async function run() {
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
       const sort = req.query.sort;
-      console.log(sort)
+      // const brand = req.query.brand;
+      const {  category, brand, minPrice, maxPrice } = req.query;
+      // console.log( brand );
+
       let query = {};
+
+     
+      if (category) query.category = category;
+      if (brand) query.brand = brand;
+      if (minPrice) query.price = { $gte: parseFloat(minPrice) };
+      if (maxPrice) query.price = { $lte: parseFloat(maxPrice) };
+
+      // let query = {};
 
       if (search) {
         query = {
@@ -47,17 +58,17 @@ async function run() {
           ],
         };
       }
-      
+
       let sortQuery;
       switch (sort) {
         case "asc":
-          sortQuery = { price: 1 }; 
+          sortQuery = { price: 1 };
           break;
         case "dsc":
-          sortQuery = { price: -1 }; 
+          sortQuery = { price: -1 };
           break;
         case "new":
-          sortQuery = { productCreationDateTime: -1 }; 
+          sortQuery = { productCreationDateTime: -1 };
           break;
         default:
           sortQuery = {};
