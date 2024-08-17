@@ -30,7 +30,6 @@ async function run() {
     const productCollection = client.db("styleBazar").collection("products");
 
     //products api
-    //products api
     app.get("/products", async (req, res) => {
       const search = req.query.search;
       const size = parseInt(req.query.size);
@@ -48,11 +47,25 @@ async function run() {
           ],
         };
       }
-      let options = {};
-      if (sort) options = { sort: { price: sort === "asc" ? 1 : -1 } };
-
+      
+      let sortQuery;
+      switch (sort) {
+        case "asc":
+          sortQuery = { price: 1 }; 
+          break;
+        case "dsc":
+          sortQuery = { price: -1 }; 
+          break;
+        case "new":
+          sortQuery = { productCreationDateTime: -1 }; 
+          break;
+        default:
+          sortQuery = {};
+          break;
+      }
       const result = await productCollection
-        .find(query, options)
+        .find(query)
+        .sort(sortQuery)
         .skip(page * size)
         .limit(size)
         .toArray();
