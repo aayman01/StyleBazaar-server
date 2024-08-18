@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const productCollection = client.db("styleBazar").collection("products");
 
@@ -35,17 +35,15 @@ async function run() {
       const size = parseInt(req.query.size);
       const page = parseInt(req.query.page) - 1;
       const sort = req.query.sort;
-      // const brand = req.query.brand;
       const {  category, brand, minPrice, maxPrice } = req.query;
       // console.log( brand );
 
       let query = {};
 
-     
       if (category) query.category = category;
       if (brand) query.brand = brand;
       if (minPrice) query.price = { $gte: parseFloat(minPrice) };
-      if (maxPrice) query.price = { $lte: parseFloat(maxPrice) };
+      if (maxPrice) query.price = { ...query.price, $lte: parseFloat(maxPrice) };
 
       // let query = {};
 
@@ -90,10 +88,10 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    // await client.db("admin").command({ ping: 1 });
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to MongoDB!"
+    // );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
